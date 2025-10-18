@@ -1,5 +1,4 @@
 import asyncio
-import worker
 import json
 import logging
 from typing import Dict, Set
@@ -9,7 +8,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from worker import BinanceListener
+from . import worker
+from .worker import BinanceListener
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("crypto-ws")
