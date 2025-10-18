@@ -87,3 +87,8 @@ async def get_latest_price(symbol: str = "BTCUSDT"):
     if s in latest_prices:
         return JSONResponse(latest_prices[s])
     return JSONResponse({"error": "no data for symbol yet"}, status_code=404)
+
+
+@app.get("/")
+async def root():
+    return {"message": "Crypto WebSocket Server is running successfully!"}
