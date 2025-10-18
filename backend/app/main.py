@@ -1,4 +1,5 @@
-import asyncio,worker
+import asyncio
+import worker
 import json
 import logging
 from typing import Dict, Set
