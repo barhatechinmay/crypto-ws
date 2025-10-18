@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Crypto WS Client</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    #prices { font-size: 1.1rem; }
+    .pair { margin-bottom: 0.5rem; }
+    .up { color: green; }
+    .down { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Live Prices (via backend)</h1>
+  <div id="status">Connecting...</div>
+  <div id="prices"></div>
+
+  <script>
+    // Replace YOUR_BACKEND_DOMAIN with your deployed backend (wss://your-backend-domain/ws)
+    const WS_URL = (location.hostname === "localhost") ? "ws://localhost:8000/ws" : "wss://YOUR_BACKEND_DOMAIN/ws";
+
+    const statusEl = document.getElementById('status');
+    const pricesEl = document.getElementById('prices');
+
+    const ws = new WebSocket(WS_URL);
+
+    ws.onopen = () => {
+      statusEl.textContent = "Connected to " + WS_URL;
+    };
+
+    ws.onmessage = (ev) => {
+      try {
+        const data = JSON.parse(ev.data);
+        if (data.type === 'heartbeat') return;
+
+        const symbol = (data.symbol ?? '').toUpperCase();
+        const last = data.last_price;
+        const pct = data.change_pct_24h;
+        const ts = data.timestamp ? new Date(data.timestamp).toLocaleString() : '';
+
+        let el = document.getElementById('p_' + symbol);
+        if (!el) {
+          el = document.createElement('div');
+          el.id = 'p_' + symbol;
+          el.className = 'pair';
+          pricesEl.appendChild(el);
+        }
+        let cls = (pct && parseFloat(pct) >= 0) ? 'up' : 'down';
+        el.innerHTML = `<strong>${symbol}</strong>: <span class="${cls}">${last}</span> (${pct}%) <small>${ts}</small>`;
+      } catch (e) {
+        console.error("Bad message", e, ev.data);
+      }
+    };
+
+    ws.onclose = () => statusEl.textContent = "Disconnected";
+    ws.onerror = (e) => statusEl.textContent = "WebSocket error";
+  </script>
+</body>
+</html>
