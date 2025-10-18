@@ -18,7 +18,9 @@
 
   <script>
     // Replace YOUR_BACKEND_DOMAIN with your deployed backend (wss://your-backend-domain/ws)
-    const WS_URL = (location.hostname === "localhost") ? "ws://localhost:8000/ws" : "wss://YOUR_BACKEND_DOMAIN/ws";
+    const WS_URL = (location.hostname === "localhost") 
+  ? "ws://localhost:8000/ws" 
+  : "wss://crypto-ws.onrender.com/ws";
 
     const statusEl = document.getElementById('status');
     const pricesEl = document.getElementById('prices');
